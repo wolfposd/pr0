@@ -10,7 +10,6 @@
 
 #import "REST.h"
 #import "Item.h"
-#import "ImageCollectionViewCell.h"
 
 #import "MWPhotoBrowser.h"
 #import "SDWebImageManager.h"
@@ -18,7 +17,6 @@
 
 @interface ViewController ()<MWPhotoBrowserDelegate>
 @property (nonatomic,strong) NSArray* items;
-@property (nonatomic,strong) NSArray* photos;
 @property (nonatomic,strong) MWPhotoBrowser* browser;
 @end
 
@@ -28,7 +26,6 @@
 {
     [super viewDidLoad];
     self.items = @[];
-    self.photos = @[];
     
     [self refreshItemsFromPr0:YES];
 }
@@ -38,15 +35,6 @@
 {
     [REST getItems:^(NSArray* items){
         self.items = items;
-        
-        NSMutableArray* photos = [NSMutableArray new];
-        
-        for(Item* item in items)
-        {
-            NSString* urlString =[REST_PROTHUMB stringByAppendingString:item.thumb];
-            [photos addObject:[MWPhoto photoWithURL:[NSURL URLWithString:urlString]]];
-        }
-        self.photos = photos;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -106,8 +94,8 @@
 
 -(NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser
 {
-    NSLog(@"%@ %lu", @"count called", self.photos.count);
-    return self.photos.count;
+    NSLog(@"%@ %lu", @"count called", self.items.count);
+    return self.items.count;
 }
 
 -(id<MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index
@@ -146,7 +134,9 @@
 
 - (id <MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser thumbPhotoAtIndex:(NSUInteger)index
 {
-    return self.photos[index];
+    Item* item  = self.items[index];
+     NSString* urlString =[REST_PROTHUMB stringByAppendingString:item.thumb];
+    return [MWPhoto photoWithURL:[NSURL URLWithString:urlString]];
 }
 
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser actionButtonPressedForPhotoAtIndex:(NSUInteger)index
