@@ -4,7 +4,11 @@
 * Anschauen des Feeds und einzelner Posts
 
 
-## Geplante Features
+## Todo
+* Kommentare
+* Tags
+* Login
+* Webm
 * der ganze Rest
 
 
